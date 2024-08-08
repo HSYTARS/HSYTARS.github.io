@@ -2,6 +2,11 @@
 
 document.addEventListener('page:loaded', () => {
 
+  if (typeof Fancybox === 'undefined') {
+    console.error('Fancybox is not loaded');
+    return;
+  }
+
   /**
    * Wrap images with fancybox.
    */
