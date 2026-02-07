@@ -11,9 +11,10 @@ import initDatetime from "./theme/tools/datetime.js";
 import initLazyLoad from "./theme/tools/lazyload.js";
 import initImageView from "./theme/tools/imageview.js";
 import initFriendLink from "./theme/friendLink.js";
+import { initAlbum, initLinkAlbum } from "./theme/albums.js";
 import initCopy from "./theme/tools/copy.js";
 import initCodeBlock from "./theme/code.js";
-import initTags from "./theme/tags.js";
+import { initTags, initMusicPlayer } from "./theme/tags.js";
 import initKeyboard from "./theme/tools/keyboard.js";
 import initPageFocus from "./theme/focus.js";
 import initMouse from "./theme/tools/mouse.js";
@@ -29,6 +30,15 @@ const initMain = () => {
     initLazyLoad();
     initImageView();
     if (GLOBALCONFIG.friends) initFriendLink();
+    if (GLOBALCONFIG.album) {
+      if (GLOBALCONFIG.album != 'external') {
+        GLOBALCONFIG.encrypt ? initAlbum(2) : initAlbum(0);
+      } else {
+        if (GLOBALCONFIG.encrypt) {
+          initLinkAlbum(2);
+        }
+      }
+    }
     initCopy();
     if (GLOBALCONFIG.codeblock) initCodeBlock();
     initTags();
@@ -48,6 +58,10 @@ const refreshFn = () => {
     initLazyLoad();
     if (GLOBALCONFIG.codeblock) initCodeBlock();
     initTags();
+    initMusicPlayer();
+    if (GLOBALCONFIG.album) {
+      GLOBALCONFIG.album != 'external' ? initAlbum(1) : initLinkAlbum(1);
+    }
   };
 
   refresh();
@@ -57,6 +71,10 @@ document.addEventListener("DOMContentLoaded", initMain);
 
 if (GLOBALCONFIG.encrypt) {
   window.addEventListener("hexo-blog-decrypt", refreshFn);
+}
+
+if (GLOBALCONFIG.album && GLOBALCONFIG.album != 'external') {
+  window.addEventListener("album-load-new-image", initLazyLoad);
 }
 
 export default initMain;
